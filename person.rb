@@ -1,5 +1,4 @@
 class Person
-  
   attr_reader :last_name, :first_name, :gender, :birthdate, :fave_color
   
   def initialize(last_name, first_name, gender, birthdate, fave_color)
