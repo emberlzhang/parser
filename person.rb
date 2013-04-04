@@ -1,13 +1,13 @@
 class Person
   attr_reader :birthdate, :fave_color, :first_name, :gender, :last_name, :middle_initial
   
-  def initialize(last_name, first_name, gender, birthdate, fave_color, middle_initial = nil)
-    @birthdate = formatted_date(birthdate)
-    @fave_color = fave_color
-    @first_name = first_name
-    @gender = formatted_gender(gender)
-    @last_name = last_name
-    @middle_initial = middle_initial
+  def initialize(attributes)
+    @birthdate = formatted_date(attributes[:birthdate])
+    @fave_color = attributes[:fave_color]
+    @first_name = attributes[:first_name]
+    @gender = formatted_gender(attributes[:gender])
+    @last_name = attributes[:last_name]
+    @middle_initial = attributes[:middle_initial]
   end
 
   private

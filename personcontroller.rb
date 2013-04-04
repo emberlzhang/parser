@@ -4,18 +4,25 @@ class PersonController
 
   def initialize(file)
     #process_all(*files)
-    original_content = File.open("pipe.txt").read
+    orig_people_info = File.open("pipe.txt").read
     @people = []
-    parsed(original_content)
+    parsed(orig_people_info)
   end
 
   def parsed(content)
-    @people << content
+    content.each_line do |line|
+      attributes = prepared_attributes(line)
+      @people << Person.new(attributes)
+    end
+  end
+
+  def prepared_attributes
+    
   end
 
   def view
     @people.inspect
-  end 
+  end
 
   # private
 
