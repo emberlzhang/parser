@@ -6,10 +6,10 @@ class PersonController
     #process_all(*files)
     original_content = File.open("pipe.txt").read
     @people = []
-    parse(original_content)
+    parsed(original_content)
   end
 
-  def parse(content)
+  def parsed(content)
     @people << content
   end
 
