@@ -60,9 +60,18 @@ class PersonController
   end
 end
 
-#"Smith | Steve | D | M | Red | 3-3-1985\nBonk | Radek | S | M | Green | 6-3-1975\nBouillon | Francis | G | M | Blue | 6-3-1975"
-#"Smith Steve Male 3/3/1985 Red\nBonk Radek Male 6/3/1975 Green\nBouillon Francis Male 6/3/1975 Blue"
   def attributes_to_hash(attributes, type) #parses data and prepares hash for person object
+    case type
+    when "pipe"
+      prepared_pipe_attributes(attributes)
+    when "comma"
+      prepared_comma_attributes(attributes)
+    when "space"
+      prepared_space_attributes(attributes)
+    end
+  end
+
+  def prepared_pipe_attributes(attributes)
     clean_attributes = attributes.gsub("\n", "")
     attribute_array = clean_attributes.split(' | ')
     last_name      = attribute_array[0]
@@ -71,6 +80,29 @@ end
     gender         = attribute_array[3]
     fave_color     = attribute_array[4] 
     birthdate      = attribute_array[5]
+    attribute_hash = { :birthdate => birthdate, :fave_color => fave_color, :gender => gender, :middle_initial => middle_initial, :last_name => last_name, :first_name => first_name}
+  end
+
+  def prepared_comma_attributes(attributes)
+    clean_attributes = attributes.gsub("\n", "")
+    attribute_array = clean_attributes.split(", ")
+    last_name      = attribute_array[0]
+    first_name     = attribute_array[1]
+    gender         = attribute_array[2]
+    fave_color     = attribute_array[3] 
+    birthdate      = attribute_array[4]
+    attribute_hash = { :birthdate => birthdate, :fave_color => fave_color, :gender => gender, :last_name => last_name, :first_name => first_name}
+  end
+
+  def prepared_space_attributes(attributes)
+    clean_attributes = attributes.gsub("\n", "")
+    attribute_array = clean_attributes.split(' ')
+    last_name      = attribute_array[0]
+    first_name     = attribute_array[1]
+    middle_initial = attribute_array[2]
+    gender         = attribute_array[3] 
+    birthdate      = attribute_array[4]
+    fave_color     = attribute_array[5]
     attribute_hash = { :birthdate => birthdate, :fave_color => fave_color, :gender => gender, :middle_initial => middle_initial, :last_name => last_name, :first_name => first_name}
   end
 
