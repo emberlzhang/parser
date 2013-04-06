@@ -1,4 +1,4 @@
-require_relative "person"
+require_relative 'person'
 
 class PersonController
   
@@ -23,19 +23,6 @@ class PersonController
       end
       # @parsed_files << @files.shift
     end
-  end
-
-#"Smith | Steve | D | M | Red | 3-3-1985\nBonk | Radek | S | M | Green | 6-3-1975\nBouillon | Francis | G | M | Blue | 6-3-1975"
-#"Smith Steve Male 3/3/1985 Red\nBonk Radek Male 6/3/1975 Green\nBouillon Francis Male 6/3/1975 Blue"
-  def attributes_to_hash(attributes, type) #parses data and prepares hash for person object
-  #   clean_string = name.gsub("\n", "")
-  #   last_name =
-  #   first_name =
-  #   middle_initial = 
-  #   gender = 
-  #   birthdate =
-  #   fave_color = 
-  #   attribute_hash = { :birthdate => birthdate, :fave_color => fave_color, :gender => gender, :middle_initial => middle_initial, :last_name => last_name, :first_name => first_name}
   end
 
   # def save_and_view_by(sort_type)
@@ -72,6 +59,20 @@ class PersonController
     lastname_sorted = @people.sort_by { |k| k[:last_name] }
   end
 end
+
+#"Smith | Steve | D | M | Red | 3-3-1985\nBonk | Radek | S | M | Green | 6-3-1975\nBouillon | Francis | G | M | Blue | 6-3-1975"
+#"Smith Steve Male 3/3/1985 Red\nBonk Radek Male 6/3/1975 Green\nBouillon Francis Male 6/3/1975 Blue"
+  def attributes_to_hash(attributes, type) #parses data and prepares hash for person object
+    clean_attributes = attributes.gsub("\n", "")
+    attribute_array = clean_attributes.split(' | ')
+    last_name      = attribute_array[0]
+    first_name     = attribute_array[1]
+    middle_initial = attribute_array[2]
+    gender         = attribute_array[3]
+    fave_color     = attribute_array[4] 
+    birthdate      = attribute_array[5]
+    attribute_hash = { :birthdate => birthdate, :fave_color => fave_color, :gender => gender, :middle_initial => middle_initial, :last_name => last_name, :first_name => first_name}
+  end
 
 #people = PersonController.new("pipe.txt", "comma.txt", "space.txt")
 

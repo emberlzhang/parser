@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require_relative 'personcontroller'
+require_relative 'person'
 
 describe "PersonController" do
   before do
@@ -23,6 +24,18 @@ describe "PersonController" do
     @parsed_pipe_data = "Smith Steve Male 3/3/1985 Red\nBonk Radek Male 6/3/1975 Green\nBouillon Francis Male 6/3/1975 Blue"
     @parsed_comma_data = "Abercrombie Neil Male 2/13/1943 Tan\nBishop Timothy Male 4/23/1967 Yellow\nKelly Sue Female 7/12/1959 Pink"
     @parsed_space_data = "Kournikova Anna Female 6/3/1975 Red\nHingis Martina Female 4/2/1979 Green\nSeles Monica Female 12/2/1973 Black"
+    
+    @orig_pipe_person1 = "Smith | Steve | D | M | Red | 3-3-1985\n"
+    @orig_pipe_person2 = "Bonk | Radek | S | M | Green | 6-3-1975\n"
+    @orig_pipe_person3 = "Bouillon | Francis | G | M | Blue | 6-3-1975"
+    
+    @prepped_pipe_attributes1 = { :last_name => "Smith", :first_name => "Steve", :gender => "M", :birthdate => "3-3-1985", :fave_color => "Red", :middle_initial => "D" }
+    @prepped_pipe_attributes2 = { :last_name => "Bonk", :first_name => "Radek", :gender => "M", :birthdate => "6-3-1975", :fave_color => "Green", :middle_initial => "S" }
+    @prepped_pipe_attributes3 = { :last_name => "Bouillon", :first_name => "Francis", :gender => "M", :birthdate => "6-3-1975", :fave_color => "Blue", :middle_initial => "G" }
+  
+    # @pipe_person1 = Person.new(@prepped_pipe_attributes1)
+    # @pipe_person2 = Person.new(@prepped_pipe_attributes2)
+    # @pipe_person3 = Person.new(@prepped_pipe_attributes3)
   end
 
   describe "initialization" do
@@ -39,7 +52,7 @@ describe "PersonController" do
     #   expect{PersonController.new("blah.png", "pipe")}.to_raise NoFileTypeError
     # end
   end
-  
+
   describe "adding new files" do
     it "retains information about multiple files" do
       people = PersonController.new("pipe.txt", "pipe")
@@ -52,7 +65,9 @@ describe "PersonController" do
 
   describe "when parsing data" do
     it "handles pipe delimited files" do
-      attributes_to_hash(@orig_pipe_data, "pipe").must_equal(@parsed_pipe_data)
+      attributes_to_hash(@orig_pipe_person1, "pipe").must_equal(@prepped_pipe_attributes1)
+      attributes_to_hash(@orig_pipe_person2, "pipe").must_equal(@prepped_pipe_attributes2)
+      attributes_to_hash(@orig_pipe_person3, "pipe").must_equal(@prepped_pipe_attributes3)
     end
 
     # it "handles comma delimited files" do
@@ -65,7 +80,8 @@ describe "PersonController" do
 
     it "stores people information from pipe delimited files" do
       peeps = PersonController.new("pipe.txt", "pipe")
-      expect_parse_stores_information(peeps)
+      peeps.parsed
+      peeps.people.wont_be_empty
     end
 
     # it "stores people information from comma delimited files" do
@@ -78,9 +94,13 @@ describe "PersonController" do
     #   expect_parse_stores_information(peeps)
     # end
 
-    def expect_parse_stores_information(controller)
-      controller.parsed
-      controller.people.wont_be_empty
-    end
+    # def expect_parse_stores_information(controller)
+    #   controller.parsed
+    #   controller.people.wont_be_empty
+    #   person1 = Person.new({ :last_name => "Smith", :first_name => "Steve", :gender => "Male", :birthdate => "3/3/1985", :fave_color => "Red" })
+    #   person2 = Person.new({ :last_name => "Smith", :first_name => "Steve", :gender => "Male", :birthdate => "3/3/1985", :fave_color => "Red" })
+    #   person3 = Person.new({ :last_name => "Smith", :first_name => "Steve", :gender => "Male", :birthdate => "3/3/1985", :fave_color => "Red" })
+    #   controller.people.must_equal [person1, person2, person3]
+    # end
   end
 end
