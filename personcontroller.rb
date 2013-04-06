@@ -1,14 +1,17 @@
+require_relative "person"
+
 class PersonController
   
+  attr_reader :files, :people
   def initialize(filename, type)
     @files = []
     add_file(filename, type)
-    @parsed_files = []
+    # @parsed_files = []
     @people = []
   end
 
   def add_file(file, type)
-    @files << { :file => file, :type => type }
+    @files << { :name => file, :type => type }
   end
 
   def parsed # parses data and makes Person objects
@@ -18,13 +21,13 @@ class PersonController
         attributes = attributes_to_hash(line, file[:type])
         @people << Person.new(attributes)
       end
-      @parsed_files << @files.shift
+      # @parsed_files << @files.shift
     end
   end
 
-"Smith | Steve | D | M | Red | 3-3-1985\nBonk | Radek | S | M | Green | 6-3-1975\nBouillon | Francis | G | M | Blue | 6-3-1975"
-"Smith Steve Male 3/3/1985 Red\nBonk Radek Male 6/3/1975 Green\nBouillon Francis Male 6/3/1975 Blue"
-  # def attributes_to_hash(attributes, type)
+#"Smith | Steve | D | M | Red | 3-3-1985\nBonk | Radek | S | M | Green | 6-3-1975\nBouillon | Francis | G | M | Blue | 6-3-1975"
+#"Smith Steve Male 3/3/1985 Red\nBonk Radek Male 6/3/1975 Green\nBouillon Francis Male 6/3/1975 Blue"
+  def attributes_to_hash(attributes, type) #parses data and prepares hash for person object
   #   clean_string = name.gsub("\n", "")
   #   last_name =
   #   first_name =
@@ -33,14 +36,14 @@ class PersonController
   #   birthdate =
   #   fave_color = 
   #   attribute_hash = { :birthdate => birthdate, :fave_color => fave_color, :gender => gender, :middle_initial => middle_initial, :last_name => last_name, :first_name => first_name}
-  # end
-
-  def save_and_view_by(sort_type)
-    sorted_people(sort_type)
-    File.new("gender_sorted.txt", "w") do |file|
-      sorted_people.each { |person| file < person. }
-    end
   end
+
+  # def save_and_view_by(sort_type)
+  #   sorted_people(sort_type)
+  #   File.new("gender_sorted.txt", "w") do |file|
+  #     sorted_people.each { |person| file < person. }
+  #   end
+  # end
 
   private
 
