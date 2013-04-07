@@ -7,7 +7,7 @@ class PersonController
   def initialize(filename, type)
     @files = []
     add_file(filename, type)
-    @parsed_files = []
+    #@parsed_files = []
     @people = []
   end
 
@@ -22,42 +22,26 @@ class PersonController
         attributes = attributes_to_hash(line, file[:type])
         @people << Person.new(attributes)
       end
-      @parsed_files << @files.shift
+      #@parsed_files << @files.shift
     end
   end
 
   # def save_and_view_by(sort_type)
-  #   sorted_people(sort_type)
+  #   sorted = sorted_people(sort_type)
   #   File.new("output_#{sort_type}.txt", "w") do |file|
-  #     sorted_people.each { |person| file < person. }
+  #     sorted.each { |person| file < person. }
   #   end
   # end
 
-  private
-
   def sorted_people(sort_type)
-    sorted_people = ""
     case sort_type
     when "gender"
-      sorted_people = sort_by_gender_lastname
+      @people.sort_by { |p| [p.gender, p.last_name] }
     when "birthdate"
-      sorted_people = sort_by_birthdate
-    when "lastname"
-      sorted_people = sort_by_lastname
+      @people.sort_by { |p| [p.birthdate_to_date, p.last_name] }
+    when "last_name"
+      @people.sort_by { |p| p.last_name }.reverse
     end
-  end
-
-  def sort_by_gender_lastname
-    gender_sorted          = @people.sort_by { |k| k[:gender] }
-    gender_lastname_sorted = gender_sorted.sort_by { |k| k[:last_name] }
-  end
-
-  def sort_by_birthdate
-    birthdate_sorted = @people.sort_by { |k| k[:birthdate] }
-  end
-
-  def sort_by_lastname
-    lastname_sorted = @people.sort_by { |k| k[:last_name] }
   end
 end
 

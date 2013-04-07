@@ -44,4 +44,10 @@ describe "Person" do
     person_with_incorrect_birthdate_format = Person.new(attributes)
     person_with_incorrect_birthdate_format.birthdate.must_equal "3/3/1985"
   end
+
+  it "provides Date version of birthdate" do
+    attributes = { :last_name => "Chang", :first_name => "Bobert", :gender => "Male", :birthdate => "11/26/1990", :fave_color => "blue", :middle_initial => "A" }
+    person = Person.new(attributes)
+    person.birthdate_to_date.must_be_kind_of(Date)
+  end
 end

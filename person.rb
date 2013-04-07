@@ -1,3 +1,5 @@
+require 'date'
+
 class Person
   attr_reader :birthdate, :fave_color, :first_name, :gender, :last_name, :middle_initial
   
@@ -10,7 +12,21 @@ class Person
     @middle_initial = attributes[:middle_initial]
   end
 
+  def birthdate_to_date
+    birthdate_to_a = @birthdate.split("/")
+    month, day, year = birthdate_to_a
+    month = standardized(month)
+    day = standardized(day)
+    "#{year}/#{month}/#{day}"
+  end
+
   private
+
+  def standardized(number)
+    if number.length == 1
+      "0" + number
+    end
+  end
   
   def formatted_date(date)
     date.gsub(/(\d{1,2})[\W](\d{1,2})[\W](\d{4})/, "\\1\/\\2\/\\3")
@@ -32,3 +48,15 @@ class Person
     end
   end 
 end
+=begin
+potential workarounds
+
+- another strptime like: Date.strptime("#{date[0]}/#{date[1]}/#{date[2][2..3]}", '%D')
+- sort_by birthyear, birthmonth, birthday, lastname
+- strptime alternative: Time
+- strptime alternative: DateTime
+- switch order of m/d/y to y/m/d
+
+
+=end
+
