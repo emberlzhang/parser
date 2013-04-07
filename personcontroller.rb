@@ -2,11 +2,12 @@ require_relative 'person'
 
 class PersonController
   
-  attr_reader :files, :people
+  attr_reader :files, :people, :parsed_files
+
   def initialize(filename, type)
     @files = []
     add_file(filename, type)
-    # @parsed_files = []
+    @parsed_files = []
     @people = []
   end
 
@@ -21,13 +22,13 @@ class PersonController
         attributes = attributes_to_hash(line, file[:type])
         @people << Person.new(attributes)
       end
-      # @parsed_files << @files.shift
+      @parsed_files << @files.shift
     end
   end
 
   # def save_and_view_by(sort_type)
   #   sorted_people(sort_type)
-  #   File.new("gender_sorted.txt", "w") do |file|
+  #   File.new("output_#{sort_type}.txt", "w") do |file|
   #     sorted_people.each { |person| file < person. }
   #   end
   # end
@@ -41,7 +42,7 @@ class PersonController
       sorted_people = sort_by_gender_lastname
     when "birthdate"
       sorted_people = sort_by_birthdate
-    else #"lastname"
+    when "lastname"
       sorted_people = sort_by_lastname
     end
   end

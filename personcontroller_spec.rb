@@ -5,26 +5,11 @@ require_relative 'person'
 
 describe "PersonController" do
   before do
-    # orig_pipe_file = "pipe.txt"
-    # orig_comma_file = "comma.txt"
-    # orig_space_file = "space.txt"
 
-    # @pipe_data = PersonController.new(orig_pipe_file)
-    # @comma_data = PersonController.new(orig_comma_file)
-    # @space_data = PersonController.new(orig_space_file)
+    @birthdate_sorted_data = File.open("output_birthdate_ascending.txt").read
+    @gender_sorted_data = File.open("output_gender_f_m.txt").read
+    @lastname_sorted_data = File.open("output_lastname_ascending.txt").read
 
-    # @parsed_by_birthdate = File.open("output_birthdate_ascending.txt")
-    # @parsed_by_gender = File.open("output_gender_f_m.txt")
-    # @parsed_by_lastname = File.open("output_lastname_ascending.txt")
-
-    # @orig_pipe_data = "Smith | Steve | D | M | Red | 3-3-1985\nBonk | Radek | S | M | Green | 6-3-1975\nBouillon | Francis | G | M | Blue | 6-3-1975"
-    # @orig_comma_data = "Abercrombie, Neil, Male, Tan, 2/13/1943\nBishop, Timothy, Male, Yellow, 4/23/1967\nKelly, Sue, Female, Pink, 7/12/1959"
-    # @orig_space_data = "Kournikova Anna F F 6-3-1975 Red\nHingis Martina M F 4-2-1979 Green\nSeles Monica H F 12-2-1973 Black"
-
-    # @parsed_pipe_data = "Smith Steve Male 3/3/1985 Red\nBonk Radek Male 6/3/1975 Green\nBouillon Francis Male 6/3/1975 Blue"
-    # @parsed_comma_data = "Abercrombie Neil Male 2/13/1943 Tan\nBishop Timothy Male 4/23/1967 Yellow\nKelly Sue Female 7/12/1959 Pink"
-    # inaccurate! @parsed_space_data = "Kournikova Anna Female 6/3/1975 Red\nHingis Martina Female 4/2/1979 Green\nSeles Monica Female 12/2/1973 Black"
-    
     @orig_pipe_person1 = "Smith | Steve | D | M | Red | 3-3-1985\n"
     @orig_pipe_person2 = "Bonk | Radek | S | M | Green | 6-3-1975\n"
     @orig_pipe_person3 = "Bouillon | Francis | G | M | Blue | 6-3-1975"
@@ -33,10 +18,6 @@ describe "PersonController" do
     @prepped_pipe_attributes2 = { :last_name => "Bonk", :first_name => "Radek", :gender => "M", :birthdate => "6-3-1975", :fave_color => "Green", :middle_initial => "S" }
     @prepped_pipe_attributes3 = { :last_name => "Bouillon", :first_name => "Francis", :gender => "M", :birthdate => "6-3-1975", :fave_color => "Blue", :middle_initial => "G" }
   
-    # @pipe_person1 = Person.new(@prepped_pipe_attributes1)
-    # @pipe_person2 = Person.new(@prepped_pipe_attributes2)
-    # @pipe_person3 = Person.new(@prepped_pipe_attributes3)
-
     @orig_comma_person1 = "Abercrombie, Neil, Male, Tan, 2/13/1943\n"
     @orig_comma_person2 = "Bishop, Timothy, Male, Yellow, 4/23/1967\n"
     @orig_comma_person3 = "Kelly, Sue, Female, Pink, 7/12/1959"
@@ -79,7 +60,7 @@ describe "PersonController" do
     end
   end
 
-  describe "when parsing data" do
+  describe "when parsing individual person data" do
     it "handles pipe delimited files" do
       attributes_to_hash(@orig_pipe_person1, "pipe").must_equal(@prepped_pipe_attributes1)
       attributes_to_hash(@orig_pipe_person2, "pipe").must_equal(@prepped_pipe_attributes2)
@@ -97,7 +78,9 @@ describe "PersonController" do
       attributes_to_hash(@orig_space_person2, "space").must_equal(@prepped_space_attributes2)
       attributes_to_hash(@orig_space_person3, "space").must_equal(@prepped_space_attributes3)
     end
+  end
 
+  describe "when parsing and storing data" do
     it "stores people information from pipe delimited files" do
       peeps = PersonController.new("pipe.txt", "pipe")
       peeps.people.must_be_empty
@@ -119,13 +102,42 @@ describe "PersonController" do
       peeps.people.wont_be_empty
     end
 
-    # def expect_parse_stores_information(controller)
-    #   controller.parsed
-    #   controller.people.wont_be_empty
-    #   person1 = Person.new({ :last_name => "Smith", :first_name => "Steve", :gender => "Male", :birthdate => "3/3/1985", :fave_color => "Red" })
-    #   person2 = Person.new({ :last_name => "Smith", :first_name => "Steve", :gender => "Male", :birthdate => "3/3/1985", :fave_color => "Red" })
-    #   person3 = Person.new({ :last_name => "Smith", :first_name => "Steve", :gender => "Male", :birthdate => "3/3/1985", :fave_color => "Red" })
-    #   controller.people.must_equal [person1, person2, person3]
-    # end
+    it "remembers parsed files" do
+      people = PersonController.new("pipe.txt", "pipe")
+      people.add_file("comma.txt", "comma")
+      people.add_file("space.txt", "space")
+      people.parsed_files.must_be_empty
+      people.parsed
+      people.parsed_files.wont_be_empty
+    end
   end
+
+  # describe "making output files" do
+  #   it "sorts by gender" do
+  #     people = PersonController.new("pipe.txt", "pipe")
+  #     people.add_file("comma.txt", "comma")
+  #     people.add_file("space.txt", "space")
+  #     people.parsed
+  #     people.save_and_view_by("gender")
+  #     File.open("output_gender.txt").must_equal(@gender_sorted_data)
+  #   end
+    
+  #   it "sorts by birthdate" do
+  #     people = PersonController.new("pipe.txt", "pipe")
+  #     people.add_file("comma.txt", "comma")
+  #     people.add_file("space.txt", "space")
+  #     people.parsed
+  #     people.save_and_view_by("birthdate")
+  #     File.open("output_birthdate.txt").must_equal(@birthdate_sorted_data)
+  #   end
+
+  #   it "sorts by last name" do
+  #     people = PersonController.new("pipe.txt", "pipe")
+  #     people.add_file("comma.txt", "comma")
+  #     people.add_file("space.txt", "space")
+  #     people.parsed
+  #     people.save_and_view_by("lastname")
+  #     File.open("output_lastname").must_equal(@lastname_sorted_data)
+  #   end
+  # end
 end
