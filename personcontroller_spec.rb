@@ -68,9 +68,9 @@ describe "PersonController" do
     end
 
     it "handles comma delimited files" do
-      attributes_to_hash(@orig_comma_person1, "pipe").must_equal(@prepped_comma_attributes1)
-      attributes_to_hash(@orig_comma_person2, "pipe").must_equal(@prepped_comma_attributes2)
-      attributes_to_hash(@orig_comma_person3, "pipe").must_equal(@prepped_comma_attributes3)
+      attributes_to_hash(@orig_comma_person1, "comma").must_equal(@prepped_comma_attributes1)
+      attributes_to_hash(@orig_comma_person2, "comma").must_equal(@prepped_comma_attributes2)
+      attributes_to_hash(@orig_comma_person3, "comma").must_equal(@prepped_comma_attributes3)
     end
 
     it "handles space delimited files" do
