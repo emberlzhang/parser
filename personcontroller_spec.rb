@@ -42,6 +42,17 @@ describe "PersonController" do
     @person7 = Person.new(@prepped_pipe_attributes2) #bonk redik
     @person8 = Person.new(@prepped_pipe_attributes3) #bouillon francis
     @person9 = Person.new(@prepped_pipe_attributes1) #smith steve
+
+    @pipe = PersonController.new("pipe.txt", "pipe")
+    @comma = PersonController.new("comma.txt", "comma")
+    @space = PersonController.new("space.txt", "space")
+
+    def uploaded_and_parsed_people
+      @pipe.add_file("comma.txt", "comma")
+      @pipe.add_file("space.txt", "space")
+      @pipe.parsed
+      @pipe
+    end
   end
 
   describe "initialization" do
@@ -71,6 +82,7 @@ describe "PersonController" do
 
   describe "when parsing individual person data" do
     it "handles pipe delimited files" do
+
       attributes_to_hash(@orig_pipe_person1, "pipe").must_equal(@prepped_pipe_attributes1)
       attributes_to_hash(@orig_pipe_person2, "pipe").must_equal(@prepped_pipe_attributes2)
       attributes_to_hash(@orig_pipe_person3, "pipe").must_equal(@prepped_pipe_attributes3)
@@ -91,68 +103,49 @@ describe "PersonController" do
 
   describe "when parsing and storing data" do
     it "stores people information from pipe delimited files" do
-      peeps = PersonController.new("pipe.txt", "pipe")
-      peeps.people.must_be_empty
-      peeps.parsed
-      peeps.people.wont_be_empty
+      @pipe.people.must_be_empty
+      @pipe.parsed
+      @pipe.people.wont_be_empty
     end
 
     it "stores people information from comma delimited files" do
-      peeps = PersonController.new("comma.txt", "comma")
-      peeps.people.must_be_empty
-      peeps.parsed
-      peeps.people.wont_be_empty
+      @comma.people.must_be_empty
+      @comma.parsed
+      @comma.people.wont_be_empty
     end
 
     it "stores people information from space delimited files" do
-      peeps = PersonController.new("space.txt", "space")
-      peeps.people.must_be_empty
-      peeps.parsed
-      peeps.people.wont_be_empty
+      @space.people.must_be_empty
+      @space.parsed
+      @space.people.wont_be_empty
     end
 
-    # it "remembers parsed files" do
-    #   people = PersonController.new("pipe.txt", "pipe")
-    #   people.add_file("comma.txt", "comma")
-    #   people.add_file("space.txt", "space")
-    #   people.parsed_files.must_be_empty
-    #   people.parsed
-    #   people.parsed_files.wont_be_empty
-    # end
+    it "remembers parsed files" do
+      uploaded_and_parsed_people.parsed_files.length.must_equal(3)
+    end
   end
 
-  # describe "making output files" do
-    # it "sorts by gender" do
-    #   people = PersonController.new("pipe.txt", "pipe")
-    #   people.add_file("comma.txt", "comma")
-    #   people.add_file("space.txt", "space")
-    #   people.parsed
-    #   people.save_and_view_by("gender")
-    #   File.open("output_gender.txt").must_equal(@gender_sorted_data)
-    # end
+  describe "making output files" do
+    it "shows by gender" do
+      uploaded_and_parsed_people.save_and_view_by("gender")
+      File.open("output_gender.txt").read.must_equal(@gender_sorted_data)
+    end
     
-  #   it "sorts by birthdate" do
-  #     people = PersonController.new("pipe.txt", "pipe")
-  #     people.add_file("comma.txt", "comma")
-  #     people.add_file("space.txt", "space")
-  #     people.parsed
-  #     people.save_and_view_by("birthdate")
-  #     File.open("output_birthdate.txt").must_equal(@birthdate_sorted_data)
-  #   end
+    it "shows by birthdate" do
+      uploaded_and_parsed_people.save_and_view_by("birthdate")
+      File.open("output_birthdate.txt").read.must_equal(@birthdate_sorted_data)
+    end
 
-  #   it "sorts by last name" do
-  #     people = PersonController.new("pipe.txt", "pipe")
-  #     people.add_file("comma.txt", "comma")
-  #     people.add_file("space.txt", "space")
-  #     people.parsed
-  #     people.save_and_view_by("lastname")
-  #     File.open("output_lastname").must_equal(@lastname_sorted_data)
-  #   end
-  # end
+    it "shows by last name" do
+      uploaded_and_parsed_people.save_and_view_by("last_name")
+      File.open("output_last_name.txt").read.must_equal(@lastname_sorted_data)
+    end
+  end
 
   describe "sorting people" do
     #NOTE: Tests in here should "fail" with "No visible difference" message. This is considered a passing test.
     #Any other failures should be considered actual failure.
+
     it "sorts by gender and fail this test with message: No visible difference." do
       sorted_mock = [@person1, @person2, @person3, @person4, @person5, @person6, @person7, @person8, @person9]
       uploaded_and_parsed_people.sorted_people("gender").must_equal(sorted_mock)
@@ -167,14 +160,6 @@ describe "PersonController" do
       sorted_mock = [@person9, @person4, @person3, @person2, @person1, @person8, @person7, @person6, @person5]
       uploaded_and_parsed_people.sorted_people("last_name").must_equal(sorted_mock)
     end
-  end
-
-  def uploaded_and_parsed_people
-    people = PersonController.new("pipe.txt", "pipe")
-    people.add_file("comma.txt", "comma")
-    people.add_file("space.txt", "space")
-    people.parsed
-    people
   end
 end
 

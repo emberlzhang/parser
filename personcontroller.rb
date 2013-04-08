@@ -7,7 +7,7 @@ class PersonController
   def initialize(filename, type)
     @files = []
     add_file(filename, type)
-    #@parsed_files = []
+    @parsed_files = []
     @people = []
   end
 
@@ -22,29 +22,34 @@ class PersonController
         attributes = attributes_to_hash(line, file[:type])
         @people << Person.new(attributes)
       end
-      #@parsed_files << @files.shift
     end
+    @parsed_files += @files
+    @files = []
   end
 
-  # def save_and_view_by(sort_type)
-  #   sorted = sorted_people(sort_type)
-  #   File.new("output_#{sort_type}.txt", "w") do |file|
-  #     sorted.each { |person| file < person. }
-  #   end
-  # end
+  def save_and_view_by(sort_type)
+    sorted = sorted_people(sort_type)
+    sorted_to_s = ""
+    sorted.each do |p|
+      sorted_to_s << "#{p.last_name} #{p.first_name} #{p.gender} #{p.birthdate} #{p.fave_color}\n"
+    end
+    File.open("output_#{sort_type}.txt", "w+") do |file|
+      file.write(sorted_to_s.chomp!)
+    end
+  end
 
   def sorted_people(sort_type)
     case sort_type
     when "gender"
-      @people.sort_by { |p| [p.gender, p.last_name] }
+      @people.sort_by! { |p| [p.gender, p.last_name] }
     when "birthdate"
-      @people.sort_by { |p| [p.birthdate_to_date, p.last_name] }
+      @people.sort_by! { |p| [p.birthdate_to_date, p.last_name] }
     when "last_name"
-      @people.sort_by { |p| p.last_name }.reverse
+      @people.sort_by! { |p| p.last_name }.reverse
     end
   end
 end
-
+  
   def attributes_to_hash(attributes, type) #parses data and prepares hash for person object
     case type
     when "pipe"
@@ -90,8 +95,6 @@ end
     fave_color     = attribute_array[5]
     attribute_hash = { :birthdate => birthdate, :fave_color => fave_color, :gender => gender, :middle_initial => middle_initial, :last_name => last_name, :first_name => first_name}
   end
-
-#people = PersonController.new("pipe.txt", "comma.txt", "space.txt")
 
 #people = PersonController.new("pipe.txt", "pipe")
 #people.parsed
