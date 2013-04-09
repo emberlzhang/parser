@@ -53,75 +53,80 @@ describe "PersonController" do
       @pipe.parsed
       @pipe
     end
+
+    def assert_people_storage(type)
+      type.people.must_be_empty
+      type.parsed
+      type.people.length.must_equal(3)
+    end
   end
 
   describe "initialization" do
     it "retains information about initial file" do
-      people = PersonController.new("pipe.txt", "pipe")
-      people.files.must_equal [{ :name => "pipe.txt", :type => "pipe" }]
+      @pipe.files.must_equal [{ :name => "pipe.txt", :type => "pipe" }]
     end
 
-    # it "requires text file as input" do
-    #   expect{PersonController.new("blah.png", "pipe")}.to_raise WrongFileFormatError
-    # end
-
-    # it "requires valid file type as input" do
-    #   expect{PersonController.new("blah.png", "pipe")}.to_raise NoFileTypeError
-    # end
+    it "requires text file as input" do
+      bad_file_input = PersonController.new("bad_file.png", "pipe")
+      bad_file_input.files.must_be_empty
+    end
   end
 
   describe "adding new files" do
     it "retains information about multiple files" do
-      people = PersonController.new("pipe.txt", "pipe")
-      people.add_file("comma.txt", "comma")
-      people.files.must_equal [{ :name => "pipe.txt", :type => "pipe" }, { :name => "comma.txt", :type => "comma" }]
-      people.add_file("space.txt", "space")
-      people.files.must_equal [{ :name => "pipe.txt", :type => "pipe" }, { :name => "comma.txt", :type => "comma" }, { :name => "space.txt", :type => "space" }]
+      @pipe.add_file("comma.txt", "comma")
+      @pipe.files.must_equal [{ :name => "pipe.txt", :type => "pipe" }, { :name => "comma.txt", :type => "comma" }]
+      @pipe.add_file("space.txt", "space")
+      @pipe.files.must_equal [{ :name => "pipe.txt", :type => "pipe" }, { :name => "comma.txt", :type => "comma" }, { :name => "space.txt", :type => "space" }]
     end
   end
 
   describe "when parsing individual person data" do
     it "handles pipe delimited files" do
-
-      attributes_to_hash(@orig_pipe_person1, "pipe").must_equal(@prepped_pipe_attributes1)
-      attributes_to_hash(@orig_pipe_person2, "pipe").must_equal(@prepped_pipe_attributes2)
-      attributes_to_hash(@orig_pipe_person3, "pipe").must_equal(@prepped_pipe_attributes3)
+      @pipe.attributes_to_hash(@orig_pipe_person1, "pipe").must_equal(@prepped_pipe_attributes1)
+      @pipe.attributes_to_hash(@orig_pipe_person2, "pipe").must_equal(@prepped_pipe_attributes2)
+      @pipe.attributes_to_hash(@orig_pipe_person3, "pipe").must_equal(@prepped_pipe_attributes3)
     end
 
     it "handles comma delimited files" do
-      attributes_to_hash(@orig_comma_person1, "comma").must_equal(@prepped_comma_attributes1)
-      attributes_to_hash(@orig_comma_person2, "comma").must_equal(@prepped_comma_attributes2)
-      attributes_to_hash(@orig_comma_person3, "comma").must_equal(@prepped_comma_attributes3)
+      @comma.attributes_to_hash(@orig_comma_person1, "comma").must_equal(@prepped_comma_attributes1)
+      @comma.attributes_to_hash(@orig_comma_person2, "comma").must_equal(@prepped_comma_attributes2)
+      @comma.attributes_to_hash(@orig_comma_person3, "comma").must_equal(@prepped_comma_attributes3)
     end
 
     it "handles space delimited files" do
-      attributes_to_hash(@orig_space_person1, "space").must_equal(@prepped_space_attributes1)
-      attributes_to_hash(@orig_space_person2, "space").must_equal(@prepped_space_attributes2)
-      attributes_to_hash(@orig_space_person3, "space").must_equal(@prepped_space_attributes3)
+      @space.attributes_to_hash(@orig_space_person1, "space").must_equal(@prepped_space_attributes1)
+      @space.attributes_to_hash(@orig_space_person2, "space").must_equal(@prepped_space_attributes2)
+      @space.attributes_to_hash(@orig_space_person3, "space").must_equal(@prepped_space_attributes3)
     end
   end
 
   describe "when parsing and storing data" do
     it "stores people information from pipe delimited files" do
-      @pipe.people.must_be_empty
-      @pipe.parsed
-      @pipe.people.wont_be_empty
+      assert_people_storage(@pipe)
     end
 
     it "stores people information from comma delimited files" do
-      @comma.people.must_be_empty
-      @comma.parsed
-      @comma.people.wont_be_empty
+      assert_people_storage(@comma)
     end
 
     it "stores people information from space delimited files" do
-      @space.people.must_be_empty
-      @space.parsed
-      @space.people.wont_be_empty
+      assert_people_storage(@space)
     end
 
     it "remembers parsed files" do
       uploaded_and_parsed_people.parsed_files.length.must_equal(3)
+    end
+  end
+
+  describe "printing content" do
+    it "prints content of parsed people data by desired sort types" do
+      @comma.parsed
+      @comma.save_and_view_by("gender")
+      @comma.save_and_view_by("birthdate")
+      @comma.save_and_view_by("last_name")
+      output = "Output 1\nKelly Sue Female 7/12/1959 Pink\nAbercrombie Neil Male 2/13/1943 Tan\nBishop Timothy Male 4/23/1967 Yellow\nOutput 2\nAbercrombie Neil Male 2/13/1943 Tan\nKelly Sue Female 7/12/1959 Pink\nBishop Timothy Male 4/23/1967 Yellow\nOutput 3\nKelly Sue Female 7/12/1959 Pink\nBishop Timothy Male 4/23/1967 Yellow\nAbercrombie Neil Male 2/13/1943 Tan\n"
+      @comma.print_content.must_equal(output)
     end
   end
 
@@ -139,6 +144,14 @@ describe "PersonController" do
     it "shows by last name" do
       uploaded_and_parsed_people.save_and_view_by("last_name")
       File.open("output_last_name.txt").read.must_equal(@lastname_sorted_data)
+    end
+
+    it "remembers all output files made" do
+      uploaded_and_parsed_people.output_files.must_be_empty
+      uploaded_and_parsed_people.save_and_view_by("gender")
+      uploaded_and_parsed_people.save_and_view_by("birthdate")
+      uploaded_and_parsed_people.save_and_view_by("last_name")
+      uploaded_and_parsed_people.output_files.length.must_equal(3)
     end
   end
 
@@ -162,7 +175,3 @@ describe "PersonController" do
     end
   end
 end
-
-
-
-
