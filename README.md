@@ -24,4 +24,4 @@ ruby application.rb
 ```
 4. View program outout with demo files:
 
-![alt text](https://github.com/janetchang/parser/blob/master/sample_output.png "Sample Terminal Output")
+![alt text](https://github.com/janetchang/parser/raw/master/sample_output.png "Sample Terminal Output")
