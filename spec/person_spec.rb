@@ -46,4 +46,15 @@ describe "Person" do
     @person.sortable_birthdate.must_equal("1990/11/26")
     @person_single_digit_birthdate.sortable_birthdate.must_equal("1954/01/04")
   end
+
+  describe 'equality' do
+    it 'is equal to another person with equal attributes' do
+      person = Person.new({ :last_name => "Chang", :first_name => "Bobert", :gender => "Male", :birthdate => "11/26/1990", :fave_color => "blue", :middle_initial => "A" })
+      @person.must_equal(person)
+    end
+
+    it 'is not equal to another person with different attributes' do
+      @person.wont_equal(@person_no_middle_initial)
+    end
+  end
 end

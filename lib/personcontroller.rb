@@ -1,5 +1,5 @@
 class PersonController
- 
+
   attr_reader :files, :people, :parsed_files, :output_files, :output_folder
 
   def initialize(filename, type, output_folder=".")
@@ -65,18 +65,16 @@ class PersonController
   end
 
   def attributes_to_hash(attributes, type)
-    clean_attributes = attributes.gsub("\n", "")
+    prepper = nil
     case type
     when "pipe"
-      prepped_attributes = PipePrepper.new(clean_attributes)
-      prepped_attributes.to_hash
+      prepper = DelimitedString.new("|", [:last_name, :first_name, :middle_initial, :gender, :fave_color, :birthdate])
     when "comma"
-      prepped_attributes = CommaPrepper.new(clean_attributes)
-      prepped_attributes.to_hash
+      prepper = DelimitedString.new(",", [:last_name, :first_name, :gender, :fave_color, :birthdate])
     when "space"
-      prepped_attributes = SpacePrepper.new(clean_attributes)
-      prepped_attributes.to_hash
+      prepper = DelimitedString.new(" ", [:last_name, :first_name, :middle_initial, :gender, :birthdate, :fave_color])
     end
+    prepared_attributes = prepper.parse(attributes)
   end
 
   private

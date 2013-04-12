@@ -22,6 +22,15 @@ class Person
     "#{last_name} #{first_name} #{gender} #{birthdate} #{fave_color}"
   end
 
+  def ==(other)
+    birthdate == other.birthdate &&
+    fave_color == other.fave_color &&
+    first_name == other.first_name &&
+    gender == other.gender &&
+    last_name == other.last_name &&
+    middle_initial == other.middle_initial
+  end
+
   private
 
   def sortable(date_number)
