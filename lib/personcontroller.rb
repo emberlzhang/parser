@@ -14,8 +14,6 @@ class PersonController
   def add_file(file, type)
     if file.include?(".txt")
       @files << { :name => file, :type => type }
-    else
-      return
     end
   end
 
