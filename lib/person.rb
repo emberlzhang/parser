@@ -11,11 +11,15 @@ class Person
   end
 
   def sortable_birthdate
-    birthdate_to_a = @birthdate.split("/")
+    birthdate_to_a = birthdate.split("/")
     month, day, year = birthdate_to_a
     month = sortable(month)
     day = sortable(day)
     "#{year}/#{month}/#{day}"
+  end
+
+  def to_string
+    "#{last_name} #{first_name} #{gender} #{birthdate} #{fave_color}"
   end
 
   private

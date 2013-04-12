@@ -1,6 +1,4 @@
-require 'minitest/autorun'
-require 'minitest/pride'
-require_relative 'person'
+require_relative 'spec_helper'
 
 describe "Person" do
   before do
